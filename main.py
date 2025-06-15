@@ -23,7 +23,8 @@ if __name__ == "__main__":
         title, script = read_script()
         print("📝 Title:", title)
         print("📜 Script:\n", script)
-        text_to_speech(script, "output.mp3")
+        mp3 = text_to_speech(script, "output.mp3")
+        print(f"🔊 Audio saved to {mp3}")
     except Exception as e:
         print("💥 Error:", e)
 

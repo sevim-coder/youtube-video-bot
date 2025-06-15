@@ -6,10 +6,11 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 
-def load_env():
-    env_path = Path(__file__).parent / 'config' / 'en_women.env'
+def load_env(path: str | None = None) -> None:
+    """Load environment variables from a .env file if present."""
+    env_path = Path(path) if path else Path(".env")
     if not load_dotenv(dotenv_path=env_path, override=True):
-        raise FileNotFoundError(f"❌ Couldn't load .env from {env_path}")
+        print(f"⚠️ .env file not found at {env_path}, relying on existing env vars")
 
 
 def sanitize_filename(title):

@@ -3,7 +3,11 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+OPENAI_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_KEY:
+    raise EnvironmentError("OPENAI_API_KEY not set in environment")
+
+client = OpenAI(api_key=OPENAI_KEY)
 
 def generate_script(title, summary=None):
     topic_style = os.getenv("TOPIC_STYLE", "general")
@@ -36,13 +40,15 @@ Create a natural, engaging 90-second narration for the video titled: "{title}"
         return None
 
 
-def save_script(title, script):
+def save_script(title: str, script: str, filename: str = "script.txt") -> str:
+    """Save the title and script into ``filename``."""
     try:
-        with open("script.txt", "w", encoding="utf-8") as f:
+        with open(filename, "w", encoding="utf-8") as f:
             f.write(f"{title.strip()}\n{script.strip()}\n")
-        print("\n💾 Script saved to script.txt")
+        print(f"\n💾 Script saved to {filename}")
+        return filename
     except Exception as e:
-        print(f"❌ Failed to save script.txt: {e}")
+        raise RuntimeError(f"Failed to save {filename}: {e}")
 
 
 if __name__ == "__main__":
@@ -51,5 +57,6 @@ if __name__ == "__main__":
     script = generate_script(video_title, summary)
     if script:
         print("\n🎤 Script:\n", script)
-        save_script(video_title, script)
+        path = save_script(video_title, script)
+        print(f"Script saved to {path}")
 
